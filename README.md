@@ -1,18 +1,18 @@
 # MIND THE GAP — The Hidden Dependency Detector
 
-MIND THE GAP is a local-first dependency risk explorer for Python projects. It statically analyzes Python imports, visualizes dependency relationships, highlights potential single points of failure, and runs deterministic hypothetical failure scenarios.
+MIND THE GAP is a local-first dependency risk explorer for Python projects. It combines safe static import analysis with deterministic, hypothetical failure scenarios to help developers ask better questions about dependency blast radius.
 
 ## Features
 
-- Upload a ZIP archive containing a Python project for static analysis.
-- Explore an interactive dependency graph.
-- Identify dependency hotspots and potential single points of failure.
-- Simulate hypothetical scenarios such as database downtime, model API outage, missing configuration, and high latency.
-- Review impact analysis and export results as JSON.
+- Responsive browser dashboard backed by FastAPI.
+- Simulate four modeled scenarios: database unavailable, AI model API unavailable, missing configuration, and high database latency.
+- Upload a ZIP archive of Python source for AST-based import analysis.
+- Review module counts, import edges, external import roots, high fan-in heuristics, and parse errors in JSON results.
+- Interactive API documentation at `/docs` and a health endpoint at `/api/health`.
 
 ## Safety and scope
 
-Uploaded source code is analyzed statically and is never executed. Scenario outcomes are modeled simulations, not real chaos-engineering experiments. Dynamic imports and runtime behavior may not be fully represented, so results should be treated as exploratory signals rather than production reliability guarantees.
+Uploaded source code is parsed as text and is never imported or executed. ZIP paths, entry count, aggregate uncompressed size, and upload size are bounded. Scenario outcomes are modeled graph traversal, not real chaos-engineering experiments. Dynamic imports and runtime behavior may not be represented. Risk labels are heuristics, not production reliability guarantees.
 
 ## Run locally
 
@@ -22,32 +22,34 @@ Python 3.10+ recommended.
 python -m venv .venv
 ```
 
-Activate the environment, then install dependencies:
+Activate the environment, then install dependencies and run the app:
 
 ```bash
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Open http://127.0.0.1:8000 in your browser.
+Open http://127.0.0.1:8000 in your browser. API documentation is available at http://127.0.0.1:8000/docs.
 
 ## Tests
 
 ```bash
-pytest -q
+python -m pytest -q
 ```
+
+GitHub Actions runs the test suite on pushes to `main` and on pull requests.
 
 ## Project layout
 
 - `app/main.py` — FastAPI application and API routes
-- `app/analyzer.py` — Python AST-based dependency analyzer
+- `app/analyzer.py` — safe Python AST import analyzer
 - `app/simulator.py` — deterministic scenario simulations
-- `app/static/index.html` — browser dashboard
+- `app/static/index.html` — responsive browser dashboard
 - `tests/` — analyzer and simulator tests
 - `examples/sample_project/` — sample project for demonstrations
-- `docs/ARCHITECTURE.md` — architecture overview
-- `docs/DEMO_SCRIPT.md` — demo walkthrough
+- `docs/ARCHITECTURE.md` — architecture and trust boundaries
+- `docs/DEMO_SCRIPT.md` — short demo walkthrough
 
 ## Limitations
 
-This prototype does not execute uploaded project code or validate actual runtime failure behavior.
+This is a prototype for dependency-risk exploration. It does not execute uploaded code, stop real services, or validate runtime failure behavior.
