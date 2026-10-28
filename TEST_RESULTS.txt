@@ -1,0 +1,4 @@
+Previously recorded test run: python -m pytest -q
+Result: 9 passed in 0.05s.
+
+Note: this is a recorded result from the prepared project package, not a new CI run of the GitHub repository.
